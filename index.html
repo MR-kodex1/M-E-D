@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الأستاذ محمد الدسوقي - اللغة الإنجليزية الشاملة</title>
+    <style>
+        :root {
+            --bg-color: #F4F7F6;
+            --header-bg: #2C3E50;
+            --tab-bg: #3498DB;
+            --tab-hover: #2980B9;
+            --card-bg: #FFFFFF;
+            --text-color: #333333;
+            --success: #2ECC71;
+            --error: #E74C3C;
+            --accent: #F39C12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 2em; }
+        header p { margin: 5px 0 0; color: #BDC3C7; }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: #ecf0f1;
+            padding: 10px;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            background-color: var(--tab-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover { background-color: var(--tab-hover); transform: translateY(-2px); }
+        .tab-btn.active { background-color: var(--header-bg); box-shadow: inset 0 3px 5px rgba(0,0,0,0.3); }
+
+        .section {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Collapsible Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-right: 5px solid var(--tab-bg);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .card-header:hover { background-color: #e9ecef; }
+        .card-header h3 { margin: 0; color: var(--header-bg); font-size: 1.2em; }
+        
+        .toggle-icon {
+            font-size: 1.5em;
+            color: var(--tab-bg);
+            transition: transform 0.3s;
+        }
+
+        .card-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .card-content.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .story-box {
+            background-color: #fff8e1;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .translation-box {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.95em;
+            color: #555;
+            border-left: 3px solid var(--tab-bg);
+        }
+
+        .char-container {
+            display: flex;
+            align-items: center;
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .char-avatar { font-size: 3em; margin-left: 15px; }
+        .char-text { font-weight: bold; color: #2980B9; font-size: 1.1em; }
+
+        .quiz-container { margin-top: 15px; background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .question { font-weight: bold; margin-bottom: 10px; }
+        .options label {
+            display: block; margin-bottom: 8px; cursor: pointer; padding: 8px;
+            border-radius: 5px; transition: background 0.2s; background: #f4f7f6;
+        }
+        .options label:hover { background-color: #d1e7f0; }
+        .btn-check {
+            background-color: var(--success); color: white; border: none;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold;
+        }
+        .btn-check:hover { background-color: #27AE60; }
+        .feedback { margin-top: 10px; font-weight: bold; display: none; }
+        .feedback.correct { color: var(--success); display: block; }
+        .feedback.wrong { color: var(--error); display: block; }
+
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        .vocab-item {
+            background: #fff; border: 1px solid #ddd; padding: 10px;
+            border-radius: 8px; text-align: center; display: flex; justify-content: space-between; align-items: center;
+        }
+        .vocab-item strong { color: var(--tab-hover); font-size: 1.05em; }
+        .vocab-item span { color: var(--error); font-size: 0.9em; font-weight: bold; }
+
+        table { width:100%; text-align:right; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f0f0f0; }
+
+        @media (max-width: 768px) {
+            .tabs { flex-direction: column; position: static; }
+            .tab-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>منصة الأستاذ محمد الدسوقي</h1>
+        <p>Interactive English Learning Platform - Full Unit 1 (1.1 to 1.5)</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('vocab')">1. المفردات والقصة</button>
+        <button class="tab-btn" onclick="openTab('reading')">2. القراءة الكاملة والأسئلة</button>
+        <button class="tab-btn" onclick="openTab('exercises')">3. تدريبات المفردات</button>
+        <button class="tab-btn" onclick="openTab('grammar')">4. القواعد (Grammar)</button>
+        <button class="tab-btn" onclick="openTab('translation')">5. الترجمة</button>
+        <button class="tab-btn" onclick="openTab('wordfamily')">6. عائلات الكلمات</button>
+        <button class="tab-btn" onclick="openTab('exam')">7. الامتحان النهائي</button>
+    </div>
+
+    <!-- ================= SECTION 1: VOCABULARY & STORY ================= -->
+    <div id="vocab" class="section active">
+        <div class="char-container">
+            <div class="char-avatar">🦉</div>
+            <div class="char-text">Lingo: أهلاً بك يا بطل! هذه هي كل مفردات المنهج. لقد قمت بتأليف قصة قصيرة لكل درس تستخدم فيها الكلمات لتثبيتها في عقلك. اقرأ القصة أولاً، ثم راجع الكلمات!</div>
+        </div>
+
+        <!-- Lesson 1.1 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>الدرس 1.1: Social Reflection</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="story-box">
+                    <strong>Lingo's Story:</strong> In our <em>fast-changing</em> world, the <em>highlight-reel effect</em> on social media creates <em>unrealistic expectations</em>. People post a <em>filtered</em> version of their lives. This leads to constant <em>social comparison</em>. Some use <em>biased language</em> and <em>absolute words</em> to judge others, ignoring their own <em>bias</em>. A <em>rhetorical question</em> can make us think: Is this real? We should use <em>neutral language</em> and <em>hedging words</em> to avoid being too <em>evaluative</em>, as this affects our <em>self-esteem</em> and <em>self-image</em>.
+                    <div class="translation-box">في عالمنا سريع التغير، يخلق تأثير اللقطات البارزة على وسائل التواصل الاجتماعي توقعات غير واقعية. ينشر الناس نسخة مفلترة من حياتهم. هذا يؤدي إلى مقارنة اجتماعية مستمرة. يستخدم البعض لغة متحيزة وكلمات قاطعة للحكم على الآخرين، متجاهلين تحيزهم. السؤال البلاغي يمكن أن يجعلنا نفكر: هل هذا حقيقي؟ يجب أن نستخدم لغة محايدة وكلمات تحفظ لتجنب أن نكون تقييميين جداً، لأن هذا يؤثر على تقديرنا لذاتنا وصورتنا الذاتية.</div>
+                </div>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><strong>Absolute word</strong><span>كلمة قاطعة</span></div>
+                    <div class="vocab-item"><strong>Bias</strong><span>تحيز</span></div>
+                    <div class="vocab-item"><strong>Biased</strong><span>متحيز</span></div>
+                    <div class="vocab-item"><strong>Biased language</strong><span>لغة متحيزة</span></div>
+                    <div class="vocab-item"><strong>Comparison</strong><span>مقارنة</span></div>
+                    <div class="vocab-item"><strong>Evaluative</strong><span>تقييمي</span></div>
+                    <div class="vocab-item"><strong>Fast-changing</strong><span>سريع التغير</span></div>
+                    <div class="vocab-item"><strong>Hedging word</strong><span>كلمة تحفظ</span></div>
+                    <div class="vocab-item"><strong>Highlight-reel effect</strong><span>تأثير اللقطات البارزة</span></div>
+                    <div class="vocab-item"><strong>Intensifier</strong><span>أداة تقوية</span></div>
+                    <div class="vocab-item"><strong>Neutral language</strong><span>لغة محايدة</span></div>
+                    <div class="vocab-item"><strong>Psychiatry</strong><span>الطب النفسي</span></div>
+                    <div class="vocab-item"><strong>Reshape</strong><span>يعيد تشكيل</span></div>
+                    <div class="vocab-item"><strong>Rhetorical question</strong><span>سؤال بلاغي</span></div>
+                    <div class="vocab-item"><strong>Social</strong><span>اجتماعي</span></div>
+                    <div class="vocab-item"><strong>Self-esteem</strong><span>تقدير الذات</span></div>
+                    <div class="vocab-item"><strong>Self-image</strong><span>الصورة الذاتية</span></div>
+                    <div class="vocab-item"><strong>Acquaintance</strong><span>معرفة</span></div>
+                    <div class="vocab-item"><strong>Celebrity</strong><span>شخصية مشهورة</span></div>
+                    <div class="vocab-item"><strong>Behavioral</strong><span>سلوكي</span></div>
+                    <div class="vocab-item"><strong>Construct</strong><span>يبني / يصنع</span></div>
+                    <div class="vocab-item"><strong>Convincing</strong><span>مقنع</span></div>
+                    <div class="vocab-item"><strong>Decade</strong><span>عقد (10 سنوات)</span></div>
+                    <div class="vocab-item"><strong>Dissatisfaction</strong><span>عدم الرضا</span></div>
+                    <div class="vocab-item"><strong>Expectation</strong><span>توقع</span></div>
+                    <div class="vocab-item"><strong>Filtered</strong><span>مفلتر/مُرشّح</span></div>
+                    <div class="vocab-item"><strong>Formation</strong><span>تكوين</span></div>
+                    <div class="vocab-item"><strong>Gap</strong><span>فجوة</span></div>
+                    <div class="vocab-item"><strong>Image-based</strong><span>قائم على الصور</span></div>
+                    <div class="vocab-item"><strong>Individual</strong><span>فرد</span></div>
+                    <div class="vocab-item"><strong>Influencer</strong><span>مؤثر</span></div>
+                    <div class="vocab-item"><strong>Imply</strong><span>يلوح إلى / يوحي بـ</span></div>
+                    <div class="vocab-item"><strong>Instinctively</strong><span>بالفطرة / تلقائياً</span></div>
+                    <div class="vocab-item"><strong>Mechanism</strong><span>آلية</span></div>
+                    <div class="vocab-item"><strong>Media literacy</strong><span>الوعي الإعلامي</span></div>
+                    <div class="vocab-item"><strong>Pressure</strong><span>ضغط</span></div>
+                    <div class="vocab-item"><strong>Psychological</strong><span>نفسي</span></div>
+                    <div class="vocab-item"><strong>Publish</strong><span>ينشر</span></div>
+                    <div class="vocab-item"><strong>Selective</strong><span>انتقائي</span></div>
+                    <div class="vocab-item"><strong>Sensitive</strong><span>حساس</span></div>
+                    <div class="vocab-item"><strong>Social media platforms</strong><span>منصات التواصل</span></div>
+                    <div class="vocab-item"><strong>Statistic</strong><span>إحصائية</span></div>
+                    <div class="vocab-item"><strong>Symptom</strong><span>عَرَض</span></div>
+                    <div class="vocab-item"><strong>Teenager/Adolescent</strong><span>مراهق</span></div>
+                    <div class="vocab-item"><strong>Traditional media</strong><span>إعلام تقليدي</span></div>
+                    <div class="vocab-item"><strong>Transform</strong><span>يتحول</span></div>
+                    <div class="vocab-item"><strong>Unrealistic</strong><span>غير واقعي</span></div>
+                    <div class="vocab-item"><strong>Version</strong><span>نسخة</span></div>
+                    <div class="vocab-item"><strong>Viewer</strong><span>مشاهد</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 1.2 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>الدرس 1.2: Exploring Modern Lifestyles</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="story-box">
+                    <strong>Lingo's Story:</strong> To improve your <em>well-being</em>, you need a <em>balanced diet</em> with <em>lean protein</em> and <em>healthy fats</em>. Avoid too much <em>processed food</em> and <em>caffeine</em>. A <em>nutritionist</em> can help you <em>maintain</em> a healthy <em>lifestyle</em>. Don't be <em>sedentary</em>; <em>physical activity</em> releases <em>endorphins</em> that <em>boost</em> your <em>mood</em> and reduce <em>anxiety</em>. Also, practice <em>mindfulness</em> and <em>meditation</em> to <em>cope with</em> <em>stress</em>. Remember, sleep is often <em>underestimated</em> for <em>brain development</em> and <em>emotional resilience</em>.
+                    <div class="translation-box">لتحسين عافيتك، تحتاج إلى نظام غذائي متوازن مع بروتين قليل الدهون ودهون صحية. تجنب الكثير من الطعام المصنع والكافيين. يمكن لأخصائي التغذية مساعدتك في الحفاظ على نمط حياة صحي. لا تكن خاملاً؛ النشاط البدني يفرز الإندورفين الذي يعزز مزاجك ويقلل القلق. أيضاً، مارس اليقظة الذهنية والتأمل للتعامل مع التوتر. تذكر أن النوم غالباً ما يكون مستهاناً به لنمو الدماغ والمرونة العاطفية.</div>
+                </div>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><strong>Measurable</strong><span>قابل للقياس</span></div>
+                    <div class="vocab-item"><strong>Mindfulness</strong><span>اليقظة الذهنية</span></div>
+                    <div class="vocab-item"><strong>Nutritionist</strong><span>أخصائي تغذية</span></div>
+                    <div class="vocab-item"><strong>Well-being</strong><span>الرفاهية / العافية</span></div>
+                    <div class="vocab-item"><strong>Processed food</strong><span>طعام مصنع</span></div>
+                    <div class="vocab-item"><strong>Sedentary</strong><span>خامل</span></div>
+                    <div class="vocab-item"><strong>Underestimated</strong><span>مستهان به</span></div>
+                    <div class="vocab-item"><strong>Absorb</strong><span>يتمتص / يستوعب</span></div>
+                    <div class="vocab-item"><strong>Academic performance</strong><span>أداء أكاديمي</span></div>
+                    <div class="vocab-item"><strong>Anxiety</strong><span>قلق</span></div>
+                    <div class="vocab-item"><strong>Balanced diet</strong><span>نظام غذائي متوازن</span></div>
+                    <div class="vocab-item"><strong>Boost</strong><span>يعزز / يقوي</span></div>
+                    <div class="vocab-item"><strong>Brain development</strong><span>نمو الدماغ</span></div>
+                    <div class="vocab-item"><strong>Caffeine</strong><span>كافيين</span></div>
+                    <div class="vocab-item"><strong>Chemical</strong><span>مادة كيميائية</span></div>
+                    <div class="vocab-item"><strong>Competitive</strong><span>تنافسي</span></div>
+                    <div class="vocab-item"><strong>Concentration</strong><span>تركيز</span></div>
+                    <div class="vocab-item"><strong>Conscious</strong><span>واع</span></div>
+                    <div class="vocab-item"><strong>Consume</strong><span>يستهلك / يتناول</span></div>
+                    <div class="vocab-item"><strong>Consumption</strong><span>استهلاك</span></div>
+                    <div class="vocab-item"><strong>Cope with</strong><span>يتعامل مع</span></div>
+                    <div class="vocab-item"><strong>Deliberate</strong><span>متعمد / مقصود</span></div>
+                    <div class="vocab-item"><strong>Depression</strong><span>اكتئاب</span></div>
+                    <div class="vocab-item"><strong>Emotional control</strong><span>تحكم عاطفي</span></div>
+                    <div class="vocab-item"><strong>Emotional resilience</strong><span>مرونة عاطفية</span></div>
+                    <div class="vocab-item"><strong>Endorphin</strong><span>إندورفين</span></div>
+                    <div class="vocab-item"><strong>Fatigue</strong><span>إرهاق</span></div>
+                    <div class="vocab-item"><strong>Foundation</strong><span>أساس</span></div>
+                    <div class="vocab-item"><strong>Healthy fat</strong><span>دهن صحي</span></div>
+                    <div class="vocab-item"><strong>Hormone</strong><span>هرمون</span></div>
+                    <div class="vocab-item"><strong>Intake</strong><span>مقدار التناول</span></div>
+                    <div class="vocab-item"><strong>Junk food</strong><span>طعام غير صحي</span></div>
+                    <div class="vocab-item"><strong>Largely</strong><span>إلى حد كبير</span></div>
+                    <div class="vocab-item"><strong>Lean protein</strong><span>بروتين قليل الدهون</span></div>
+                    <div class="vocab-item"><strong>Lifestyle</strong><span>نمط حياة</span></div>
+                    <div class="vocab-item"><strong>Loneliness</strong><span>وحدة</span></div>
+                    <div class="vocab-item"><strong>Maintain</strong><span>يحافظ على</span></div>
+                    <div class="vocab-item"><strong>Mental health</strong><span>صحة نفسية</span></div>
+                    <div class="vocab-item"><strong>Meditation</strong><span>تأمل</span></div>
+                    <div class="vocab-item"><strong>Moderate</strong><span>معتدل</span></div>
+                    <div class="vocab-item"><strong>Mood</strong><span>مزاج</span></div>
+                    <div class="vocab-item"><strong>Non-judgmental</strong><span>غير حكمي</span></div>
+                    <div class="vocab-item"><strong>Perception</strong><span>تصور / إدراك</span></div>
+                    <div class="vocab-item"><strong>Physical activity</strong><span>نشاط بدني</span></div>
+                    <div class="vocab-item"><strong>Quality</strong><span>جودة</span></div>
+                    <div class="vocab-item"><strong>Recovery</strong><span>تعافي</span></div>
+                    <div class="vocab-item"><strong>Reduce</strong><span>يقلل</span></div>
+                    <div class="vocab-item"><strong>Release</strong><span>يفرز / يطلق</span></div>
+                    <div class="vocab-item"><strong>Screen-based</strong><span>قائم على الشاشات</span></div>
+                    <div class="vocab-item"><strong>Self-confidence</strong><span>ثقة بالنفس</span></div>
+                    <div class="vocab-item"><strong>Sleep routine</strong><span>روتين نوم</span></div>
+                    <div class="vocab-item"><strong>Stress</strong><span>توتر</span></div>
+                    <div class="vocab-item"><strong>Survey</strong><span>استطلاع</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 1.3 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>الدرس 1.3: Whose Responsibility Is It?</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="story-box">
+                    <strong>Lingo's Story:</strong> Who is responsible for our health? Some believe in personal <em>agency</em> and an internal <em>locus of control</em>, attributing success to <em>willpower</em>. They think we should take <em>ownership</em> and <em>prioritize</em> healthy choices. However, others argue that <em>structural barriers</em> and <em>socioeconomic background</em> play a major role. A <em>nudge</em> from a policy can help, but <em>restrictions</em> might be <em>disempowering</em>. To build <em>self-efficacy</em> and <em>resilience</em>, we need a supportive <em>community</em> that doesn't just blame the <em>individual</em>.
+                    <div class="translation-box">من المسؤول عن صحتنا؟ يؤمن البعض بقدرة الفرد على الاختيار ومركز التحكم الداخلي، وينسبون النجاح لقوة الإرادة. يعتقدون أنه يجب علينا تحمل المسؤولية وإعطاء الأولوية للخيارات الصحية. ومع ذلك، يجادل آخرون بأن العوائق الهيكلية والخلفية الاجتماعية والاقتصادية تلعب دوراً رئيسياً. قد تساعد دفعة لطيفة من السياسة، لكن القيود قد تكون مضعفة للقدرة. لبناء الكفاءة الذاتية والمرونة، نحتاج إلى مجتمع داعم لا يلوم الفرد فقط.</div>
+                </div>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><strong>Agency</strong><span>قدرة على الاختيار</span></div>
+                    <div class="vocab-item"><strong>Disempowering</strong><span>مضعف للقدرة</span></div>
+                    <div class="vocab-item"><strong>Locus of control</strong><span>موضع التحكم</span></div>
+                    <div class="vocab-item"><strong>Nudge</strong><span>دفعة لطيفة</span></div>
+                    <div class="vocab-item"><strong>Resilience</strong><span>مرونة / صمود</span></div>
+                    <div class="vocab-item"><strong>Self-efficacy</strong><span>الكفاءة الذاتية</span></div>
+                    <div class="vocab-item"><strong>Structural barrier</strong><span>عائق بنيوي</span></div>
+                    <div class="vocab-item"><strong>Abandon</strong><span>يُخلي عن</span></div>
+                    <div class="vocab-item"><strong>Accessible</strong><span>متاح</span></div>
+                    <div class="vocab-item"><strong>Adolescent</strong><span>مراهق</span></div>
+                    <div class="vocab-item"><strong>Advocate</strong><span>مؤيد</span></div>
+                    <div class="vocab-item"><strong>Affordable</strong><span>ميسور التكلفة</span></div>
+                    <div class="vocab-item"><strong>Attribute</strong><span>ينسب</span></div>
+                    <div class="vocab-item"><strong>Background</strong><span>خلفية</span></div>
+                    <div class="vocab-item"><strong>Behavior</strong><span>سلوك</span></div>
+                    <div class="vocab-item"><strong>Brand</strong><span>علامة تجارية</span></div>
+                    <div class="vocab-item"><strong>Campaign</strong><span>حملة</span></div>
+                    <div class="vocab-item"><strong>Capacity</strong><span>قدرة / طاقة</span></div>
+                    <div class="vocab-item"><strong>Central</strong><span>أساسي</span></div>
+                    <div class="vocab-item"><strong>Challenge</strong><span>يتحدى</span></div>
+                    <div class="vocab-item"><strong>Community</strong><span>مجتمع محلي</span></div>
+                    <div class="vocab-item"><strong>Confidence</strong><span>ثقة</span></div>
+                    <div class="vocab-item"><strong>Context</strong><span>سياق</span></div>
+                    <div class="vocab-item"><strong>Demonstrate</strong><span>يوضح</span></div>
+                    <div class="vocab-item"><strong>Determine</strong><span>يحدد</span></div>
+                    <div class="vocab-item"><strong>Economic</strong><span>اقتصادي</span></div>
+                    <div class="vocab-item"><strong>Exert</strong><span>يمارس / يفرض</span></div>
+                    <div class="vocab-item"><strong>External</strong><span>خارجي</span></div>
+                    <div class="vocab-item"><strong>Facility</strong><span>منشأة</span></div>
+                    <div class="vocab-item"><strong>Factor</strong><span>عامل</span></div>
+                    <div class="vocab-item"><strong>Force</strong><span>قوة</span></div>
+                    <div class="vocab-item"><strong>Freedom</strong><span>حرية</span></div>
+                    <div class="vocab-item"><strong>Genuine</strong><span>حقيقي</span></div>
+                    <div class="vocab-item"><strong>Healthy choice</strong><span>اختيار صحي</span></div>
+                    <div class="vocab-item"><strong>Impressionable</strong><span>سريع التأثر</span></div>
+                    <div class="vocab-item"><strong>Individual</strong><span>فرد</span></div>
+                    <div class="vocab-item"><strong>Influence</strong><span>يؤثر في</span></div>
+                    <div class="vocab-item"><strong>Internal</strong><span>داخلي</span></div>
+                    <div class="vocab-item"><strong>Introduce</strong><span>يقدم</span></div>
+                    <div class="vocab-item"><strong>Journal</strong><span>مجلة علمية</span></div>
+                    <div class="vocab-item"><strong>Landmark study</strong><span>دراسة بارزة</span></div>
+                    <div class="vocab-item"><strong>Limited income</strong><span>دخل محدود</span></div>
+                    <div class="vocab-item"><strong>Manage</strong><span>يدير</span></div>
+                    <div class="vocab-item"><strong>Measure</strong><span>مقياس</span></div>
+                    <div class="vocab-item"><strong>Neighborhood</strong><span>حي</span></div>
+                    <div class="vocab-item"><strong>Outcome</strong><span>نتيجة</span></div>
+                    <div class="vocab-item"><strong>Outside force</strong><span>قوة خارجية</span></div>
+                    <div class="vocab-item"><strong>Ownership</strong><span>تحمل مسؤولية</span></div>
+                    <div class="vocab-item"><strong>Peer pressure</strong><span>ضغط الأقران</span></div>
+                    <div class="vocab-item"><strong>Philosopher</strong><span>فيلسوف</span></div>
+                    <div class="vocab-item"><strong>Policy</strong><span>سياسة</span></div>
+                    <div class="vocab-item"><strong>Preference</strong><span>تفضيل</span></div>
+                    <div class="vocab-item"><strong>Prioritize</strong><span>يعطي الأولوية</span></div>
+                    <div class="vocab-item"><strong>Proponent</strong><span>مؤيد</span></div>
+                    <div class="vocab-item"><strong>Psychology</strong><span>علم النفس</span></div>
+                    <div class="vocab-item"><strong>Public health</strong><span>صحة عامة</span></div>
+                    <div class="vocab-item"><strong>Purpose</strong><span>هدف</span></div>
+                    <div class="vocab-item"><strong>Responsibility</strong><span>مسؤولية</span></div>
+                    <div class="vocab-item"><strong>Restrict</strong><span>يقيد</span></div>
+                    <div class="vocab-item"><strong>Restriction</strong><span>قيد</span></div>
+                    <div class="vocab-item"><strong>Socioeconomic</strong><span>اجتماعي اقتصادي</span></div>
+                    <div class="vocab-item"><strong>Sociology</strong><span>علم الاجتماع</span></div>
+                    <div class="vocab-item"><strong>Struggle</strong><span>يكافح</span></div>
+                    <div class="vocab-item"><strong>Target</strong><span>يستهدف</span></div>
+                    <div class="vocab-item"><strong>Willpower</strong><span>قوة إرادة</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson 1.4 & 1.5 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>الدرس 1.4 و 1.5: Understanding Mental Health</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="story-box">
+                    <strong>Lingo's Story:</strong> Mental health varies between <em>urban</em> and <em>rural</em> areas. Some cultures are <em>collectivist</em>, prioritizing the group, while others are <em>individualistic</em>. Teenagers <em>interact</em> differently and face various <em>variables</em> that affect their stress. Seeking <em>counseling</em> is a <em>decisive</em> step. We must <em>rank</em> our problems and <em>identify</em> the <em>primary</em> ones. Don't <em>rely on</em> bad habits; <em>cope</em> with stress and <em>adopt</em> healthy routines.
+                    <div class="translation-box">تختلف الصحة النفسية بين المناطق الحضرية والريفية. بعض الثقافات جماعية، تعطي الأولوية للمجموعة، بينما البعض الآخر فردي. يتفاعل المراهقون بشكل مختلف ويواجهون متغيرات مختلفة تؤثر على توترهم. طلب الإرشاد النفسي خطوة حاسمة. يجب أن نرتب مشاكلنا ونحدد المشاكل الأساسية. لا تعتمد على العادات السيئة؛ تعامل مع التوتر وتبنَّ روتيناً صحياً.</div>
+                </div>
+                <div class="vocab-grid">
+                    <div class="vocab-item"><strong>Collectivist</strong><span>جماعي</span></div>
+                    <div class="vocab-item"><strong>Counseling</strong><span>إرشاد نفسي</span></div>
+                    <div class="vocab-item"><strong>Decisive</strong><span>حاسم</span></div>
+                    <div class="vocab-item"><strong>Individualistic</strong><span>فردي</span></div>
+                    <div class="vocab-item"><strong>Interact</strong><span>يتفاعل</span></div>
+                    <div class="vocab-item"><strong>Rank</strong><span>يصنف / يرتب</span></div>
+                    <div class="vocab-item"><strong>Rural</strong><span>ريفي</span></div>
+                    <div class="vocab-item"><strong>Urban</strong><span>حضري</span></div>
+                    <div class="vocab-item"><strong>Variable</strong><span>متغير</span></div>
+                    <div class="vocab-item"><strong>Academic</strong><span>أكاديمي</span></div>
+                    <div class="vocab-item"><strong>Adopt</strong><span>يتبنى</span></div>
+                    <div class="vocab-item"><strong>Average</strong><span>متوسط</span></div>
+                    <div class="vocab-item"><strong>Conclude</strong><span>يستنتج</span></div>
+                    <div class="vocab-item"><strong>Cope</strong><span>يتعامل</span></div>
+                    <div class="vocab-item"><strong>Examine</strong><span>يفحص</span></div>
+                    <div class="vocab-item"><strong>Household</strong><span>أسرة / منزل</span></div>
+                    <div class="vocab-item"><strong>Identify</strong><span>يتعرف على</span></div>
+                    <div class="vocab-item"><strong>Insufficient</strong><span>غير كافٍ</span></div>
+                    <div class="vocab-item"><strong>Participant</strong><span>مشارك</span></div>
+                    <div class="vocab-item"><strong>Peer</strong><span>زميل / قرين</span></div>
+                    <div class="vocab-item"><strong>Primary</strong><span>أساسي</span></div>
+                    <div class="vocab-item"><strong>Quality</strong><span>جودة</span></div>
+                    <div class="vocab-item"><strong>Reliant</strong><span>معتمد على</span></div>
+                    <div class="vocab-item"><strong>Respondent</strong><span>مستجيب (في استطلاع)</span></div>
+                    <div class="vocab-item"><strong>Sample</strong><span>عينة</span></div>
+                    <div class="vocab-item"><strong>Significant</strong><span>هام / كبير</span></div>
+                    <div class="vocab-item"><strong>Survey</strong><span>استطلاع</span></div>
+                    <div class="vocab-item"><strong>Targeted</strong><span>مستهدف</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 2: READING & QUESTIONS ================= -->
+    <div id="reading" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🦉</div>
+            <div class="char-text">Lingo: هنا نقرأ النصوص المهمة من الكتاب المدرسي. لقد قمت بوضع القطعة كاملة بكل فقراتها وترجمتها، وأسفلها ستجد كل أسئلتها التفاعلية. اقرأ بتركيز!</div>
+        </div>
+
+        <!-- Reading 1 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Reading 1: Social Media & Teenagers (Lesson 1.1)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>In today's fast-changing world, social media plays a major role in shaping how teenagers think, feel, and see themselves. While it can inspire healthy habits and positive change, it can also create unrealistic expectations and pressure.</strong></p>
+                <div class="translation-box">في عالم اليوم سريع التغير، تلعب وسائل التواصل الاجتماعي دوراً رئيسياً في تشكيل كيفية تفكير المراهقين وشعورهم ورؤيتهم لأنفسهم. بينما يمكنها إلهام العادات الصحية والتغيير الإيجابي، يمكنها أيضاً خلق توقعات غير واقعية وضغط.</div>
+
+                <p><strong>Over the past decade, social media platforms have transformed from simple communication tools into carefully chosen stages where individuals perform carefully constructed versions of their lives. For teenagers, who are at a particularly sensitive stage of identity formation, this change carries significant psychological results. Research published by the American Psychological Association in 2023 found that teenagers who spent more than three hours daily on image-based platforms such as Instagram and TikTok were twice as likely to report symptoms of low self-esteem and body dissatisfaction compared to those who used social media for less than one hour per day.</strong></p>
+                <div class="translation-box">على مدى العقد الماضي، تحولت منصات التواصل الاجتماعي من أدوات تواصل بسيطة إلى منصات مختارة بعناية حيث يقدم الأفراد نسخاً مبنية بعناية من حياتهم. بالنسبة للمراهقين، الذين يمرون بمرحلة حساسة بشكل خاص من تكوين الهوية، يحمل هذا التغيير نتائج نفسية كبيرة. وجد بحث نُشرته الجمعية الأمريكية لعلم النفس في عام 2023 أن المراهقين الذين يقضون أكثر من ثلاث ساعات يومياً على المنصات القائمة على الصور مثل إنستغرام وتيك توك كانوا أكثر عرضة بمرتين للإبلاغ عن أعراض تدني احترام الذات وعدم الرضا عن الجسد مقارنة بأولئك الذين استخدموا وسائل التواصل الاجتماعي لأقل من ساعة واحدة يومياً.</div>
+
+                <p><strong>What makes social media especially powerful, and especially dangerous, is the mechanism of social comparison. Unlike traditional media, where the gap between ordinary people and celebrities is obvious, social media has hidden this gap completely. Teenagers are now comparing themselves not only to distant celebrities, but to classmates, acquaintances, and influencers who present their lives as easily perfect. Psychologists use the term highlight-reel effect to describe this phenomenon: what appears online is a selective, filtered, and strategically timed part of reality, yet viewers instinctively treat it as a complete and accurate picture.</strong></p>
+                <div class="translation-box">ما يجعل وسائل التواصل الاجتماعي قوية بشكل خاص، وخطيرة بشكل خاص، هو آلية المقارنة الاجتماعية. على عكس الإعلام التقليدي، حيث تكون الفجوة بين الناس العاديين والمشاهير واضحة، أخفت وسائل التواصل الاجتماعي هذه الفجوة تماماً. يقارن المراهقون أنفسهم الآن ليس فقط بالمشاهير البعيدين، بل بزملائهم ومعارفهم والمؤثرين الذين يقدمون حياتهم على أنها مثالية بسهولة. يستخدم علماء النفس مصطلح تأثير اللقطات البارزة لوصف هذه الظاهرة: ما يظهر على الإنترنت هو جزء انتقائي ومفلتر وموقوت استراتيجياً من الواقع، ومع ذلك يتعامل معه المشاهدون بالفطرة كصورة كاملة ودقيقة.</div>
+
+                <!-- Questions for Reading 1 -->
+                <h4 style="color: var(--tab-hover); margin-top: 30px;">أسئلة القراءة الأولى:</h4>
+                
+                <div class="quiz-container">
+                    <div class="question">1. According to the research mentioned in the passage, teenagers who spent more than three hours a day on image-based platforms are ...........</div>
+                    <div class="options">
+                        <label><input type="radio" name="r1q1" value="a"> a. Less likely to compare themselves with others</label>
+                        <label><input type="radio" name="r1q1" value="b"> b. Twice as likely to report low self-esteem and body dissatisfaction</label>
+                        <label><input type="radio" name="r1q1" value="c"> c. More likely to use social media for communication only</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r1q1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r1q1"></div>
+                </div>
+                
+                <div class="quiz-container">
+                    <div class="question">2. Why can social comparison on social media be more powerful than comparison through traditional media?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r1q2" value="a"> a. Traditional media never shows successful people</label>
+                        <label><input type="radio" name="r1q2" value="b"> b. Social media prevents teenagers from seeing people they know</label>
+                        <label><input type="radio" name="r1q2" value="c"> c. Teenagers compare themselves with apparently ordinary people as well as celebrities</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r1q2', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-r1q2"></div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="question">3. Which title best expresses the main idea of paragraphs 3-4?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r1q3" value="a"> a. Why Teenagers Prefer Traditional Media</label>
+                        <label><input type="radio" name="r1q3" value="b"> b. How Online Comparisons Can Create a False Picture of Reality</label>
+                        <label><input type="radio" name="r1q3" value="c"> c. Why Celebrities Have Stopped Influencing Teenagers</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r1q3', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r1q3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading 2 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Reading 2: Exercise, Nutrition & Mindfulness (Lesson 1.2)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>Health experts regularly recommend that teenagers do at least 60 minutes of moderate-to-hard physical activity every day. This doesn't necessarily mean competitive sport. Activities such as cycling to school, swimming, or even a brisk walk, all count towards the daily target. What makes exercise particularly powerful is its effect on the brain: physical activity causes the release of endorphins, chemicals that reduce feelings of stress and anxiety at the same time as boosting mood and self-confidence. Furthermore, teenagers who exercise regularly tend to sleep more deeply and report higher levels of concentration during school hours. Despite these well-documented benefits, a landmark WHO-led study found that more than 80% of teenagers worldwide fail to meet the recommended daily activity levels, largely due to sedentary screen-based habits.</strong></p>
+                <div class="translation-box">يوصي خبراء الصحة بانتظام بأن يمارس المراهقون ما لا يقل عن 60 دقيقة من النشاط البدني المعتدل إلى الشاق كل يوم. هذا لا يعني بالضرورة الرياضة التنافسية. الأنشطة مثل ركوب الدراجة إلى المدرسة، أو السباحة، أو حتى المشي السريع، كلها تُحتسب ضمن الهدف اليومي. ما يجعل التمرين قوياً بشكل خاص هو تأثيره على الدماغ: النشاط البدني يسبب إفراز الإندورفين، وهي مواد كيميائية تقلل من مشاعر التوتر والقلق في نفس الوقت الذي تعزز فيه المزاج والثقة بالنفس. علاوة على ذلك، يميل المراهقون الذين يمارسون الرياضة بانتظام إلى النوم بعمق أكبر والإبلاغ عن مستويات تركيز أعلى خلال ساعات الدراسة. على الرغم من هذه الفوائد الموثقة جيداً، وجدت دراسة بارزة بقيادة منظمة الصحة العالمية أن أكثر من 80٪ من المراهقين في جميع أنحاء العالم لا يلبون مستويات النشاط اليومي الموصى بها، ويرجع ذلك إلى حد كبير إلى العادات الخاملة القائمة على الشاشات.</div>
+
+                <p><strong>A balanced diet is widely seen as the foundation of physical and mental well-being. Nutritionists advise that teenagers consume a varied range of fruits, vegetables, whole grains, lean proteins, and healthy fats, while limiting their intake of processed foods, too much sugar, and high-caffeine drinks. Poor nutrition has been directly linked to fatigue, difficulty concentrating, and mood changes, all of which affect academic performance. Sleep is equally important, but it is often underestimated. Teenagers require from eight to ten hours of sleep per night to support brain development, emotional control, and physical recovery. Research published in the journal Sleep Medicine found that teenagers who slept fewer than seven hours per night were more likely to report symptoms of anxiety and depression. Setting up a regular bedtime routine, such as avoiding screens for one hour before sleeping, has been shown to improve sleep quality.</strong></p>
+                <div class="translation-box">يُنظر إلى النظام الغذائي المتوازن على نطاق واسع على أنه أساس الرفاهية الجسدية والعقلية. ينصح خبراء التغذية المراهقين بتناول مجموعة متنوعة من الفواكه والخضروات والحبوب الكاملة والبروتينات الخالية من الدهون والدهون الصحية، مع الحد من تناولهم للأطعمة المصنعة والكثير من السكر والمشروبات عالية الكافيين. ارتبط سوء التغذية مباشرة بالإرهاق وصعوبة التركيز وتغيرات المزاج، وكلها تؤثر على الأداء الأكاديمي. النوم لا يقل أهمية، لكن غالباً ما يتم الاستهانة به. يحتاج المراهقون من ثماني إلى عشر ساعات من النوم كل ليلة لدعم نمو الدماغ والتحكم العاطفي والتعافي البدني. وجد بحث نُشر في مجلة Sleep Medicine أن المراهقين الذين ناموا أقل من سبع ساعات في الليلة كانوا أكثر عرضة للإبلاغ عن أعراض القلق والاكتئاب. ثبت أن إعداد روتين منتظم للنوم، مثل تجنب الشاشات لمدة ساعة قبل النوم، يحسن جودة النوم.</div>
+
+                <p><strong>In recent years, mindfulness has moved from specialist wellness programs into common education. Mindfulness involves paying deliberate attention to the present moment, and can take many forms: meditation, slow breathing exercises, yoga, or simply sitting quietly without a device. Studies suggest that even ten minutes of daily mindfulness practice leads to measurable reductions in stress hormones over a period of four to six weeks. Alongside mindfulness, social connection plays a very important role in emotional health. Spending quality time with friends and family — face to face rather than through screens — has been shown to reduce loneliness and build the emotional resilience needed to cope with life's pressures. Finally, many psychologists advise us to be conscious not only of what we eat, but also of the media, products, and information we absorb daily.</strong></p>
+                <div class="translation-box">في السنوات الأخيرة، انتقلت اليقظة الذهنية من برامج العافية المتخصصة إلى التعليم العام. تتضمن اليقظة الذهنية توجيه انتباه متعمد للحظة الحالية، ويمكن أن تتخذ أشكالاً عديدة: التأمل، تمارين التنفس البطيء، اليوجا، أو ببساطة الجلوس بهدوء بدون جهاز. تشير الدراسات إلى أن حتى عشر دقائق من ممارسة اليقظة الذهنية اليومية تؤدي إلى انخفاضات قابلة للقياس في هرمونات التوتر على مدى فترة تتراوح من أربعة إلى ستة أسابيع. إلى جانب اليقظة الذهنية، يلعب التواصل الاجتماعي دوراً مهماً للغاية في الصحة العاطفية. ثبت أن قضاء وقت ممتع مع الأصدقاء والعائلة - وجهاً لوجه بدلاً من الشاشات - يقلل من الشعور بالوحدة ويبني المرونة العاطفية اللازمة للتعامل مع ضغوط الحياة. أخيراً، ينصحنا العديد من علماء النفس بأن نكون واعين ليس فقط لما نأكله، ولكن أيضاً لوسائل الإعلام والمنتجات والمعلومات التي نستوعبها يومياً.</div>
+
+                <!-- Questions for Reading 2 -->
+                <h4 style="color: var(--tab-hover); margin-top: 30px;">أسئلة القراءة الثانية:</h4>
+
+                <div class="quiz-container">
+                    <div class="question">1. According to the passage, regular physical activity can improve teenagers' mood partly because it ...........</div>
+                    <div class="options">
+                        <label><input type="radio" name="r2q1" value="a"> a. increases the amount of time they spend sleeping</label>
+                        <label><input type="radio" name="r2q1" value="b"> b. causes the release of chemicals that reduce stress and anxiety</label>
+                        <label><input type="radio" name="r2q1" value="c"> c. prevents them from experiencing any emotional pressure</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r2q1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r2q1"></div>
+                </div>
+                
+                <div class="quiz-container">
+                    <div class="question">2. Which sentence best paraphrases the finding about mindfulness in paragraph 3?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r2q2" value="a"> a. Mindfulness needs to be practised for a long time each day before it can reduce stress.</label>
+                        <label><input type="radio" name="r2q2" value="b"> b. Even ten minutes of daily practice can lead to measurable reductions in stress hormones.</label>
+                        <label><input type="radio" name="r2q2" value="c"> c. Mindfulness is only effective for adults, not teenagers.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r2q2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r2q2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading 3 -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Reading 3: Whose Responsibility Is It? (Lesson 1.3)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>People have different opinions about who is responsible for a person's lifestyle and well-being. Some believe that individuals should make their own healthy choices and take control of their habits. Others argue that family, society, money, and social media strongly influence people's decisions. The article explores different perspectives on responsibility, well-being, and the factors that shape human behavior and identity.</strong></p>
+                <div class="translation-box">لدى الناس آراء مختلفة حول من هو المسؤول عن نمط حياة الشخص ورفاهيته. يعتقد البعض أن الأفراد يجب أن يتخذوا خياراتهم الصحية الخاصة ويتحكموا في عاداتهم. يجادل آخرون بأن الأسرة والمجتمع والمال ووسائل التواصل الاجتماعي تؤثر بقوة على قرارات الناس. تستكشف المقالة وجهات نظر مختلفة حول المسؤولية والرفاهية والعوامل التي تشكل السلوك البشري والهوية.</div>
+
+                <p><strong>Many health professionals and philosophers argue that personal responsibility lies at the heart of a well-lived life. From this perspective, every individual possesses the agency — the capacity to choose and act, and it is through the exercise of this agency that identity is formed. Choosing to exercise, to eat nutritiously, to sleep well, and to manage stress are not simply habits; they are expressions of who we are and what we value. Psychologists refer to this as having an "internal locus of control" — a belief that one's own actions, rather than external forces, determine outcomes. Research often supports the benefits of taking personal ownership. A landmark study published in the Journal of Health Psychology found that individuals who scored highly on self-efficacy measures — that is, those who believed in their ability to make positive changes — were significantly more likely to maintain healthy behaviors over time, regardless of their socioeconomic background. Furthermore, advocates of personal responsibility argue that framing health as someone else's problem can be disempowering. When individuals attribute their choices entirely to outside forces, they risk becoming passive. Taking ownership, by contrast, builds confidence, resilience, and a sense of purpose, qualities that are central to a positive identity.</strong></p>
+                <div class="translation-box">يجادل العديد من المتخصصين في الصحة والفلاسفة بأن المسؤولية الشخصية تقع في قلب حياة يعيشها المرء بشكل جيد. من هذا المنظور، يمتلك كل فرد القدرة على الاختيار والفعل، ومن خلال ممارسة هذه القدرة تتشكل الهوية. اختيار ممارسة الرياضة، وتناول الطعام المغذي، والنوم جيداً، وإدارة التوتر ليست مجرد عادات؛ إنها تعبيرات عن من نحن وما نقدره. يشير علماء النفس إلى هذا على أنه امتلاك "مركز تحكم داخلي" - وهو الاعتقاد بأن أفعال الفرد، بدلاً من القوى الخارجية، هي التي تحدد النتائج. غالباً ما يدعم البحث فوائد تحمل المسؤولية الشخصية. وجدت دراسة بارزة نُشرت في مجلة Journal of Health Psychology أن الأفراد الذين حصلوا على درجات عالية في مقاييس الكفاءة الذاتية - أي أولئك الذين آمنوا بقدرتهم على إحداث تغييرات إيجابية - كانوا أكثر عرضة بكثير للحفاظ على السلوكيات الصحية بمرور الوقت، بغض النظر عن خلفيتهم الاجتماعية والاقتصادية. علاوة على ذلك، يجادل مؤيدو المسؤولية الشخصية بأن تأطير الصحة كمشكلة شخص آخر يمكن أن يكون مضعفاً للقدرة. عندما ينسب الأفراد خياراتهم بالكامل إلى قوى خارجية، فإنهم يخاطرون بأن يصبحوا سلبيين. في المقابل، فإن تحمل المسؤولية يبني الثقة والمرونة والشعور بالهدف، وهي صفات مركزية للهوية الإيجابية.</div>
+
+                <p><strong>However, the idea that individuals are entirely responsible for their own health is increasingly challenged by social scientists and public health experts. Research in sociology demonstrates that where we grow up, how much money our family has, and the cultural rules we are raised with profoundly shape the choices available to us. Structural barriers, such as limited access to affordable healthy food or safe places to exercise, can make healthy choices much harder for some groups. A balanced perspective suggests that personal agency and social responsibility are not either-or choices. Instead, individuals need freedom to make healthy decisions, while governments and communities should create supportive environments that make those choices easier. This might include public health policies, better facilities, and targeted education that help everyone achieve better well-being.</strong></p>
+                <div class="translation-box">ومع ذلك، فإن فكرة أن الأفراد مسؤولون تماماً عن صحتهم يتحداها علماء الاجتماع وخبراء الصحة العامة بشكل متزايد. يُظهر البحث في علم الاجتماع أن المكان الذي نشأنا فيه، ومقدار المال الذي تمتلكه عائلتنا، والقواعد الثقافية التي نشأنا عليها تشكل بشكل عميق الخيارات المتاحة لنا. يمكن للعوائق الهيكلية، مثل محدودية الوصول إلى طعام صحي ميسور التكلفة أو أماكن آمنة لممارسة الرياضة، أن تجعل الخيارات الصحية أكثر صعوبة بالنسبة لبعض الفئات. يشير المنظور المتوازن إلى أن قدرة الفرد على الاختيار والمسؤولية الاجتماعية ليست خيارات إما هذا أو ذاك. بدلاً من ذلك، يحتاج الأفراد إلى الحرية لاتخاذ قرارات صحية، بينما يجب على الحكومات والمجتمعات إنشاء بيئات داعمة تجعل تلك الخيارات أسهل. قد يشمل ذلك سياسات الصحة العامة، ومرافق أفضل، وتعليم مستهدف يساعد الجميع على تحقيق رفاهية أفضل.</div>
+
+                <!-- Questions for Reading 3 -->
+                <h4 style="color: var(--tab-hover); margin-top: 30px;">أسئلة القراءة الثالثة:</h4>
+
+                <div class="quiz-container">
+                    <div class="question">1. What does the expression "structural barriers" mean in this passage?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r3q1" value="a"> a. Buildings designed to prevent people from entering</label>
+                        <label><input type="radio" name="r3q1" value="b"> b. Personal habits that are difficult to change</label>
+                        <label><input type="radio" name="r3q1" value="c"> c. Social, economic or environmental conditions that restrict choice</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r3q1', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-r3q1"></div>
+                </div>
+                
+                <div class="quiz-container">
+                    <div class="question">2. What can be inferred about the writer's attitude?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r3q2" value="a"> a. Individuals alone should be held responsible for their health.</label>
+                        <label><input type="radio" name="r3q2" value="b"> b. Healthy behavior is shaped by both personal agency and external conditions.</label>
+                        <label><input type="radio" name="r3q2" value="c"> c. People have almost no ability to improve their own behavior.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r3q2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r3q2"></div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="question">3. Find one sentence showing that the final perspective balances personal freedom with outside support.</div>
+                    <div class="options">
+                        <label><input type="radio" name="r3q3" value="a"> a. "People have different opinions about who is responsible..."</label>
+                        <label><input type="radio" name="r3q3" value="b"> b. "Individuals need freedom to make healthy decisions, while governments and communities should create supportive environments..."</label>
+                        <label><input type="radio" name="r3q3" value="c"> c. "Research in sociology demonstrates that where we grow up... profoundly shape the choices..."</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r3q3', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r3q3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading 4 (Added) -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Reading 4: Teenage Stress in Egypt (Lesson 1.4)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>Stress among teenagers is a growing concern in Egypt. A recent survey included teenagers from urban and rural schools to understand the main causes of their stress and how they cope. Social-media comparison was cited by 61% of respondents as a major source of stress. Academic pressure and family expectations were also high on the list. When asked about coping strategies, some teenagers said they used music, exercise, or nature to manage stress, while others preferred seeking family support. However, the study found that the effectiveness of these strategies depended more on the quality of support than on the coping style itself. The survey also revealed a significant gap: while stress was widespread, rural schools had less access to counselling than urban schools, highlighting the need for targeted school support.</strong></p>
+                <div class="translation-box">التوتر بين المراهقين هو مصدر قلق متزايد في مصر. تضمن استطلاع حديث المراهقين من المدارس الحضرية والريفية لفهم الأسباب الرئيسية لتوترهم وكيفية تعاملهم معه. أشار 61٪ من المستجيبين إلى المقارنة عبر وسائل التواصل الاجتماعي كمصدر رئيسي للتوتر. كما كانت الضغوط الأكاديمية وتوقعات الأسرة عالية في القائمة. وعند سؤالهم عن استراتيجيات التعامل، قال بعض المراهقين إنهم استخدموا الموسيقى أو الرياضة أو الطبيعة لإدارة التوتر، بينما فضل آخرون البحث عن دعم الأسرة. ومع ذلك، وجدت الدراسة أن فعالية هذه الاستراتيجيات تعتمد بشكل أكبر على جودة الدعم أكثر من اعتمادها على أسلوب التعامل نفسه. كما كشف الاستطلاع عن فجوة كبيرة: ففي حين كان التوتر منتشراً على نطاق واسع، كان لدى المدارس الريفية وصول أقل إلى الإرشاد النفسي مقارنة بالمدارس الحضرية، مما يسلط الضوء على الحاجة إلى دعم مدرسي مستهدف.</div>
+
+                <!-- Questions for Reading 4 -->
+                <h4 style="color: var(--tab-hover); margin-top: 30px;">أسئلة القراءة الرابعة:</h4>
+
+                <div class="quiz-container">
+                    <div class="question">1. According to paragraph 2, what did the study find about regular physical activity?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r4q1" value="a"> a. It removed examination stress completely.</label>
+                        <label><input type="radio" name="r4q1" value="b"> b. It was linked to stress levels that were 34% lower on average.</label>
+                        <label><input type="radio" name="r4q1" value="c"> c. It improved academic performance by 34%.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r4q1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-r4q1"></div>
+                </div>
+                
+                <div class="quiz-container">
+                    <div class="question">2. Which sentence best paraphrases the finding about coping strategies in paragraph 3?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r4q2" value="a"> a. Seeking family support was always the most effective approach.</label>
+                        <label><input type="radio" name="r4q2" value="b"> b. Coping alone was more effective than receiving family support.</label>
+                        <label><input type="radio" name="r4q2" value="c"> c. Effectiveness depended more on support quality than on coping style.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r4q2', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-r4q2"></div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="question">3. Which detail most strongly supports the conclusion that targeted school support is needed?</div>
+                    <div class="options">
+                        <label><input type="radio" name="r4q3" value="a"> a. The survey included teenagers from urban and rural schools.</label>
+                        <label><input type="radio" name="r4q3" value="b"> b. Social-media comparison was cited by 61% of respondents.</label>
+                        <label><input type="radio" name="r4q3" value="c"> c. Stress was widespread, while rural schools had less access to counselling.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('r4q3', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-r4q3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 3: VOCAB EXERCISES ================= -->
+    <div id="exercises" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🦉</div>
+            <div class="char-text">Lingo: حان وقت الاختبار! أجب عن الأسئلة للتأكد من فهمك للمفردات التي درستها.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>تدريبات الدرس الأول (1.1)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. The lecturer said "Who wants to live under pressure?" He asked a/an ........... question to make the students think.</div>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="a"> a. selective</label>
+                        <label><input type="radio" name="q1" value="b"> b. rhetorical</label>
+                        <label><input type="radio" name="q1" value="c"> c. unrealistic</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-q1"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. The article praised influencers and ignored their negative effects, so readers noticed its ...........</div>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="a"> a. reality</label>
+                        <label><input type="radio" name="q2" value="b"> b. bias</label>
+                        <label><input type="radio" name="q2" value="c"> c. research</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-q2"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>تدريبات الدرس الثاني (1.2)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. A/An ........... advises people about healthy food choices and balanced diets.</div>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="a"> a. nutritionist</label>
+                        <label><input type="radio" name="q3" value="b"> b. architect</label>
+                        <label><input type="radio" name="q3" value="c"> c. journalist</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q3', 'a')">تحقق</button>
+                    <div class="feedback" id="fb-q3"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. When you spend most of the day sitting and rarely exercise, your lifestyle is ...........</div>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="a"> a. mindful</label>
+                        <label><input type="radio" name="q4" value="b"> b. measurable</label>
+                        <label><input type="radio" name="q4" value="c"> c. sedentary</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q4', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-q4"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>تدريبات الدرس الثالث (1.3)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. A person with strong ........... can recover quickly after difficulties.</div>
+                    <div class="options">
+                        <label><input type="radio" name="q5" value="a"> a. pressure</label>
+                        <label><input type="radio" name="q5" value="b"> b. resilience</label>
+                        <label><input type="radio" name="q5" value="c"> c. policy</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q5', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-q5"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. Someone with an internal ........... believes effort can change results.</div>
+                    <div class="options">
+                        <label><input type="radio" name="q6" value="a"> a. campaign</label>
+                        <label><input type="radio" name="q6" value="b"> b. measure</label>
+                        <label><input type="radio" name="q6" value="c"> c. locus of control</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q6', 'c')">تحقق</button>
+                    <div class="feedback" id="fb-q6"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>تدريبات الدرس الرابع (1.4)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. When the neighborhood water pump broke, residents contributed what they could because everyone depended on it. Their response reflected ........... values.</div>
+                    <div class="options">
+                        <label><input type="radio" name="q7" value="a"> a. collectivist</label>
+                        <label><input type="radio" name="q7" value="b"> b. individualistic</label>
+                        <label><input type="radio" name="q7" value="c"> c. urban</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q7', 'a')">تحقق</button>
+                    <div class="feedback" id="fb-q7"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. To discuss her panic attacks, she attended weekly sessions with a trained specialist for ...........</div>
+                    <div class="options">
+                        <label><input type="radio" name="q8" value="a"> a. counseling</label>
+                        <label><input type="radio" name="q8" value="b"> b. performance</label>
+                        <label><input type="radio" name="q8" value="c"> c. survey</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('q8', 'a')">تحقق</button>
+                    <div class="feedback" id="fb-q8"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 4: GRAMMAR ================= -->
+    <div id="grammar" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🤖</div>
+            <div class="char-text">Verbo: أهلاً بك! أنا Verbo. سأشرح لك القواعد ببساطة. لدينا قاعدتين أساسيتين في هذه الوحدة: Relative Clauses و Conditionals.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Grammar 1: Relative Clauses (عبارات الوصل)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>القاعدة ببساطة:</strong> نستخدمها لربط جملتين معاً لوصف شخص أو شيء أو مكان أو زمان.</p>
+                <ul>
+                    <li><strong>Who/That:</strong> للعاقل (The man <strong>who</strong> is wearing a black jacket is my uncle).</li>
+                    <li><strong>Which/That:</strong> لغير العاقل (The factory <strong>which</strong> produces a lot of pollution must be closed).</li>
+                    <li><strong>Where:</strong> للمكان (The cafe <strong>where</strong> we usually sit is quiet).</li>
+                    <li><strong>When:</strong> للزمان (Friday is the day <strong>when</strong> most families visit relatives).</li>
+                    <li><strong>Whose:</strong> للملكية (The student <strong>whose</strong> answer was excellent received praise).</li>
+                    <li><strong>Whom:</strong> للمفعول به العاقل (The doctor to <strong>whom</strong> I spoke advised me to sleep early).</li>
+                </ul>
+                <div class="quiz-container">
+                    <div class="question">تدريب سريع: This is the book ........... I bought from the Book Fair.</div>
+                    <div class="options">
+                        <label><input type="radio" name="g1" value="a"> a. who</label>
+                        <label><input type="radio" name="g1" value="b"> b. which</label>
+                        <label><input type="radio" name="g1" value="c"> c. where</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('g1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-g1"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Grammar 2: Conditional Structures (If Clauses)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <p><strong>First Conditional (الحالة الأولى - واقعية في المستقبل):</strong></p>
+                <p>If + Present Simple, Will + Infinitive</p>
+                <p><em>Example: If he <strong>works</strong> hard, he<strong>'ll pass</strong> the next exam.</em></p>
+                <hr>
+                <p><strong>Second Conditional (الحالة الثانية - خيالية في الحاضر/المستقبل):</strong></p>
+                <p>If + Past Simple, Would + Infinitive</p>
+                <p><em>Example: If I <strong>were</strong> you, I <strong>would follow</strong> a plan.</em></p>
+                <hr>
+                <p><strong>Third Conditional (الحالة الثالثة - ندم على الماضي):</strong></p>
+                <p>If + Past Perfect, Would have + Past Participle (p.p)</p>
+                <p><em>Example: If I <strong>had studied</strong> medicine, I <strong>would have passed</strong>.</em></p>
+                <hr>
+                <p><strong>ملاحظات هامة (Unless / In case):</strong></p>
+                <p><strong>Unless:</strong> تعني "إذا لم" (Unless you charge the phone, it will switch off).</p>
+                <p><strong>In case:</strong> تعني "تحسباً لـ" (Take a jacket in case the weather becomes cold).</p>
+
+                <div class="quiz-container">
+                    <div class="question">تدريب سريع: If I ........... free yesterday, I would have met you.</div>
+                    <div class="options">
+                        <label><input type="radio" name="g2" value="a"> a. were</label>
+                        <label><input type="radio" name="g2" value="b"> b. had been</label>
+                        <label><input type="radio" name="g2" value="c"> c. am</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('g2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-g2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 5: TRANSLATION ================= -->
+    <div id="translation" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🦉</div>
+            <div class="char-text">Lingo: تدريب الترجمة يساعدك على ربط الكلمات بمعانيها العربية. اختر الترجمة الصحيحة!</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>تدريبات الترجمة التفاعلية</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. ما معنى كلمة "Bias"؟</div>
+                    <div class="options">
+                        <label><input type="radio" name="t1" value="a"> a. تحيز</label>
+                        <label><input type="radio" name="t1" value="b"> b. حياد</label>
+                        <label><input type="radio" name="t1" value="c"> c. تقوية</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('t1', 'a')">تحقق</button>
+                    <div class="feedback" id="fb-t1"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. ما معنى جملة "Social media may affect teenagers' self-image"؟</div>
+                    <div class="options">
+                        <label><input type="radio" name="t2" value="a"> a. وسائل التواصل الاجتماعي تدمر صورة المراهقين الذاتية.</label>
+                        <label><input type="radio" name="t2" value="b"> b. وسائل التواصل الاجتماعي قد تؤثر على صورة المراهقين الذاتية.</label>
+                        <label><input type="radio" name="t2" value="c"> c. وسائل التواصل الاجتماعي لا تؤثر أبداً على المراهقين.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('t2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-t2"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">3. ما معنى "Sedentary lifestyle"؟</div>
+                    <div class="options">
+                        <label><input type="radio" name="t3" value="a"> a. نمط حياة نشط</label>
+                        <label><input type="radio" name="t3" value="b"> b. نمط حياة خامل (قليل الحركة)</label>
+                        <label><input type="radio" name="t3" value="c"> c. نمط حياة صحي</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('t3', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-t3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 6: WORD FAMILY ================= -->
+    <div id="wordfamily" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🦉</div>
+            <div class="char-text">Lingo: عائلات الكلمات (Word Family) مهمة جداً. كلمة واحدة يمكن أن تتحول لاسم أو فعل أو صفة. لاحظ التغيير!</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Word Family من الدرس الأول (1.1)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <table>
+                    <tr><th>Word</th><th>Example</th></tr>
+                    <tr><td><strong>Absolute (adj)</strong> قاطع</td><td>"Always" is an absolute word.</td></tr>
+                    <tr><td><strong>Absolutely (adv)</strong> تماماً</td><td>The post speaks absolutely.</td></tr>
+                    <tr><td><strong>Bias (n)</strong> تحيز</td><td>The post shows bias.</td></tr>
+                    <tr><td><strong>Biased (adj)</strong> متحيز</td><td>The language is biased.</td></tr>
+                    <tr><td><strong>Unbiased (adj)</strong> محايد</td><td>The report is unbiased.</td></tr>
+                </table>
+                <div class="quiz-container" style="margin-top:20px;">
+                    <div class="question">تدريب: The article revealed a clear ........... in favour of one side of the argument.</div>
+                    <div class="options">
+                        <label><input type="radio" name="w1" value="a"> a. biased</label>
+                        <label><input type="radio" name="w1" value="b"> b. bias</label>
+                        <label><input type="radio" name="w1" value="c"> c. unbiased</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('w1', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-w1"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Word Family من الدرس الثاني (1.2)</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <table>
+                    <tr><th>Word</th><th>Example</th></tr>
+                    <tr><td><strong>Measure (v)</strong> يقيس</td><td>Scientists measure stress levels.</td></tr>
+                    <tr><td><strong>Measurement (n)</strong> قياس</td><td>The measurement showed improvement.</td></tr>
+                    <tr><td><strong>Measurable (adj)</strong> قابل للقياس</td><td>The results were measurable.</td></tr>
+                    <tr><td><strong>Nutrition (n)</strong> تغذية</td><td>Good nutrition supports health.</td></tr>
+                    <tr><td><strong>Nutritionist (n)</strong> أخصائي تغذية</td><td>A nutritionist advises teenagers.</td></tr>
+                </table>
+                <div class="quiz-container" style="margin-top:20px;">
+                    <div class="question">تدريب: The fitness app showed a ........... improvement in his daily steps.</div>
+                    <div class="options">
+                        <label><input type="radio" name="w2" value="a"> a. measure</label>
+                        <label><input type="radio" name="w2" value="b"> b. measurable</label>
+                        <label><input type="radio" name="w2" value="c"> c. measurement</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('w2', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-w2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SECTION 7: EXAM ================= -->
+    <div id="exam" class="section">
+        <div class="char-container">
+            <div class="char-avatar">🤖</div>
+            <div class="char-text">Verbo & Lingo: هذا هو الامتحان الشامل. خذ وقتك وأجب بدقة. بالتوفيق يا بطل!</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>Final Interactive Exam</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="quiz-container">
+                    <div class="question">1. Choose the correct sentence:</div>
+                    <div class="options">
+                        <label><input type="radio" name="e3" value="a"> a. Cairo, that is the capital of Egypt, is the biggest city in Africa.</label>
+                        <label><input type="radio" name="e3" value="b"> b. Cairo, which is the capital of Egypt, is the biggest city in Africa.</label>
+                        <label><input type="radio" name="e3" value="c"> c. Cairo, where is the capital of Egypt, is the biggest city in Africa.</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('e3', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-e3"></div>
+                </div>
+                <hr>
+                <div class="quiz-container">
+                    <div class="question">2. If the weather ........... tomorrow, the competition will continue.</div>
+                    <div class="options">
+                        <label><input type="radio" name="e4" value="a"> a. improve</label>
+                        <label><input type="radio" name="e4" value="b"> b. improves</label>
+                        <label><input type="radio" name="e4" value="c"> c. improved</label>
+                    </div>
+                    <button class="btn-check" onclick="checkAnswer('e4', 'b')">تحقق</button>
+                    <div class="feedback" id="fb-e4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            var sections = document.getElementsByClassName('section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            var buttons = document.getElementsByClassName('tab-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleCard(header) {
+            var content = header.nextElementSibling;
+            var icon = header.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('show');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function checkAnswer(questionName, correctAnswer) {
+            var radios = document.getElementsByName(questionName);
+            var selectedValue = null;
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    selectedValue = radios[i].value;
+                    break;
+                }
+            }
+            var feedbackDiv = document.getElementById('fb-' + questionName);
+            if (selectedValue === null) {
+                feedbackDiv.innerHTML = "⚠️ برجاء اختيار إجابة أولاً!";
+                feedbackDiv.className = "feedback wrong";
+            } else if (selectedValue === correctAnswer) {
+                feedbackDiv.innerHTML = "✅ إجابة صحيحة! أحسنت يا بطل.";
+                feedbackDiv.className = "feedback correct";
+            } else {
+                feedbackDiv.innerHTML = "❌ إجابة خاطئة. حاول مرة أخرى.";
+                feedbackDiv.className = "feedback wrong";
+            }
+        }
+
+        // Open the first card in each section by default for better UX
+        window.onload = function() {
+            var firstCards = document.querySelectorAll('.section .card:first-of-type .card-header');
+            firstCards.forEach(function(header) {
+                toggleCard(header);
+            });
+        };
+    </script>
+</body>
+</html>
